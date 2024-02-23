@@ -1,15 +1,16 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class TransactionModel {
-    private String id;
+    private UUID id;
     private String from;
     private String to; // another account if transfer or the same account (as from) if money is withdrawn
     private MoneyModel amount;
     private LocalDate timestamp;
 
-    public TransactionModel(String id, String from, String to, MoneyModel amount, LocalDate timestamp) {
+    public TransactionModel(UUID id, String from, String to, MoneyModel amount, LocalDate timestamp) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -18,11 +19,11 @@ public class TransactionModel {
 
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

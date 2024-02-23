@@ -21,7 +21,7 @@ public class TransactionManagerService {
         }
 
         TransactionModel transaction = new TransactionModel(
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 fromAccountId,
                 toAccountId,
                 value,
