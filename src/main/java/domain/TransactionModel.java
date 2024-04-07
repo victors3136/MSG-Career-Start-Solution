@@ -69,5 +69,13 @@ public class TransactionModel {
                 ", timestamp=" + timestamp +
                 '}';
     }
+
+    public boolean isWithdrawal() {
+        return to.equals(from);
+    }
+
+    public boolean isTransfer() {
+        return !isWithdrawal();
+    }
 }
 

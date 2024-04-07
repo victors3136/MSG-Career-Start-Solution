@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryDatabase<T> {
-    private Map<String, T> db = new HashMap<>();
+    private final Map<String, T> db = new HashMap<>();
 
-    public boolean exist(String id) {
-        return db.containsKey(id);
+    public boolean doesNotHave(String id) {
+        return !db.containsKey(id);
     }
 
     public T get(String id) {
@@ -26,5 +26,9 @@ public class InMemoryDatabase<T> {
 
     public boolean remove(String id) {
         return db.remove(id) != null;
+    }
+
+    public void clear() {
+        db.clear();
     }
 }
