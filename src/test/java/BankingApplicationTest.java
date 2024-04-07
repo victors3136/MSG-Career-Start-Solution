@@ -5,6 +5,7 @@ import repository.AccountsRepository;
 import seed.SeedInitializer;
 import services.SavingsManagerService;
 import services.TransactionManagerService;
+import utils.MoneyUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class BankingApplicationTest {
             TransactionManagerService.transfer(source.getId(), dest.getId(), transactionOfMoreMoneyThanExistsInSource);
             fail();
         } catch (RuntimeException rex) {
-            assert (true);
+            assert true;
         }
 
         System.out.println("[Tester] -------------Checking that the failed transaction was not logged--------------------------\n");
@@ -97,7 +98,7 @@ public class BankingApplicationTest {
             TransactionManagerService.withdraw(withdrawingAccount.getId(), amountToWithdrawFromC);
             fail();
         } catch (RuntimeException rex) {
-            assert (true);
+            assert true;
         }
         assertEquals(withdrawingAccount.getBalance().getAmount(), withdrawerFunds, 0.01);
 
@@ -127,7 +128,7 @@ public class BankingApplicationTest {
             TransactionManagerService.withdraw(accountWithExpiredCard.getId(), new MoneyModel(10, CurrencyType.EUR));
             fail();
         } catch (RuntimeException rex) {
-            assert (true);
+            assert true;
         }
 
         System.out.println("[Tester] -------------Creating an account with conservative limits------------------------------\n");
@@ -171,7 +172,7 @@ public class BankingApplicationTest {
             TransactionManagerService.withdraw(overlyWorriedUser.getId(), new MoneyModel(41, CurrencyType.EUR));
             fail();
         } catch (RuntimeException rex) {
-            assert (true);
+            assert true;
         }
 
         System.out.println("[Tester] -------------Checking if transferring money fails----------------------------------------\n");
@@ -179,7 +180,7 @@ public class BankingApplicationTest {
             TransactionManagerService.transfer(overlyWorriedUser.getId(), normalUser.getId(), new MoneyModel(41, CurrencyType.EUR));
             fail();
         } catch (RuntimeException rex) {
-            assert (true);
+            assert true;
         }
 
         System.out.println("[Tester] -------------Checking if daily spending compounds----------------------------------------\n");
@@ -199,18 +200,53 @@ public class BankingApplicationTest {
                 otherCard);
         AccountsRepository.INSTANCE.add(otherAccount.getId(), otherAccount);
         TransactionManagerService.withdraw(otherAccount.getId(), new MoneyModel(6000, CurrencyType.EUR));
+        assertEquals(TransactionManagerService.checkFunds(otherAccount.getId()).getAmount(), 10_000, 0.01);
+        assertEquals(TransactionManagerService.retrieveTransactions(otherAccount.getId()).size(), 2);
         try {
             TransactionManagerService.withdraw(otherAccount.getId(), new MoneyModel(1001, CurrencyType.EUR));
             fail();
         } catch (RuntimeException rex) {
-            assert (true);
+            assert true;
         }
+        System.out.println("[Tester] -------------Testing 'stray' cases----------------------------------------\n");
+
         TransactionManagerService.transfer(otherAccount.getId(), normalUser.getId(), new MoneyModel(6000, CurrencyType.EUR));
         try {
             TransactionManagerService.transfer(otherAccount.getId(), normalUser.getId(), new MoneyModel(1001, CurrencyType.EUR));
             fail();
         } catch (RuntimeException rex) {
-            assert (true);
+            assert true;
         }
+
+        try {
+            TransactionManagerService.withdraw("this account does not exist", new MoneyModel(0, CurrencyType.RON));
+            fail();
+        } catch (RuntimeException rex) {
+            assert true;
+        }
+        try {
+            TransactionManagerService.checkFunds("this account does not exist");
+            fail();
+        } catch (RuntimeException rex) {
+            assert true;
+        }
+        try {
+            TransactionManagerService.retrieveTransactions("this account does not exist");
+            fail();
+        } catch (RuntimeException rex) {
+            assert true;
+        }
+        SavingsAccountModel euroSource = new SavingsAccountModel("EURAccount", new MoneyModel(10, CurrencyType.EUR), new ArrayList<>(),
+                InterestRate.SIX_MONTH_ACCOUNT,
+                CapitalizationFrequency.QUARTERLY,
+                LocalDate.now());
+        SavingsAccountModel ronDestination = new SavingsAccountModel("RONAccount", new MoneyModel(10, CurrencyType.RON), new ArrayList<>(),
+                InterestRate.SIX_MONTH_ACCOUNT,
+                CapitalizationFrequency.QUARTERLY,
+                LocalDate.now());
+        AccountsRepository.INSTANCE.add(euroSource.getId(), euroSource);
+        AccountsRepository.INSTANCE.add(ronDestination.getId(), ronDestination);
+        TransactionManagerService.transfer(euroSource.getId(), ronDestination.getId(), new MoneyModel(1, CurrencyType.EUR));
+        assertEquals(ronDestination.getBalance().getAmount(), 10 + 1 * MoneyUtils.getConversionRate(CurrencyType.EUR, CurrencyType.RON), 0.01);
     }
 }
