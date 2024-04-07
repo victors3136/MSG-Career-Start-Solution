@@ -12,8 +12,6 @@ import java.util.function.Predicate;
 import static utils.MoneyUtils.convert;
 
 public class TransactionManagerService {
-    private static final int SOURCE_COEFFICIENT = -1;
-    private static final int DESTINATION_COEFFICIENT = 1;
 
     private static class TransactionValidator {
         private static boolean sourceHasEnoughFundsToCompleteTransaction(AccountModel sourceAccount, AccountModel destinationAccount, MoneyModel transactedSum) {
@@ -68,8 +66,10 @@ public class TransactionManagerService {
             return validateSufficientBalance(account, account, transactedSum) &&
                     /// If the account is checking (and has an associated card)
                     (!(account instanceof CheckingAccountModel checkingAccount) || (
-                            /// check if card is in its valid period
-                            checkingAccount.getAssociatedCard().getIssueDate().isBefore(LocalDate.now()) &&
+                            /// check if card is valid
+                            checkingAccount.getAssociatedCard().isActive() &&
+                                    /// check if card is in its valid period
+                                    checkingAccount.getAssociatedCard().getIssueDate().isBefore(LocalDate.now()) &&
                                     checkingAccount.getAssociatedCard().getExpirationDate().isAfter(LocalDate.now()) &&
                                     /// and hasn't reached withdrawal limit
                                     checkingAccountHasNotReachedDailyWithdrawalLimit(checkingAccount, transactedSum, dateOfWithdrawal)));
@@ -95,6 +95,8 @@ public class TransactionManagerService {
     }
 
     public static TransactionModel transfer(String fromAccountId, String toAccountId, MoneyModel value) {
+        byte SOURCE_COEFFICIENT = -1;
+        byte DESTINATION_COEFFICIENT = 1;
         AccountModel fromAccount = AccountsRepository.INSTANCE.get(fromAccountId);
         AccountModel toAccount = AccountsRepository.INSTANCE.get(toAccountId);
 

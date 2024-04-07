@@ -31,8 +31,6 @@ public class BankingApplication {
         System.out.printf("[Transaction Manager] 4. A: %s%n", TransactionManagerService.checkFunds(checkingAccountA.getId()));
         System.out.printf("[Transaction Manager] 5. B: %s%n", TransactionManagerService.checkFunds(checkingAccountB.getId()));
 
-//         Uncomment the following lines if the withdrawal method is available in the TransactionManagerService
-
         System.out.printf("[Transaction Manager] 6. C: %s%n", TransactionManagerService.checkFunds(checkingAccountC.getId()));
 
 
@@ -60,26 +58,26 @@ public class BankingApplication {
         System.out.printf("[Saving Manager] 2. B: %s%n", TransactionManagerService.checkFunds(savingsAccountB.getId()));
         int monthCounter = 1;
         SavingsManagerService.passTime();
-        System.out.printf("%d month went by%n", monthCounter++);
-        System.out.printf("[Saving Manager] 3. A: %s%n", TransactionManagerService.checkFunds(savingsAccountA.getId()));
+        System.out.println("[Saving Manager] 3. 1 month went by%n");
+        System.out.printf("[Saving Manager] 4. A: %s%n", TransactionManagerService.checkFunds(savingsAccountA.getId()));
 
         SavingsManagerService.passTime();
-        System.out.printf("%d months went by%n", monthCounter++);
+        System.out.println("[Saving Manager] 5. 2 months went by%n");
         SavingsManagerService.passTime();
-        System.out.printf("%d months went by%n", monthCounter++);
+        System.out.println("[Saving Manager] 6. 3 months went by%n");
         SavingsManagerService.passTime();
-        System.out.printf("%d months went by%n", monthCounter++);
+        System.out.println("[Saving Manager] 7. 4 months went by%n");
         SavingsManagerService.passTime();
-        System.out.printf("%d months went by%n", monthCounter++);
+        System.out.println("[Saving Manager] 8. 5 months went by%n");
         SavingsManagerService.passTime();
-        System.out.printf("%d months went by%n", monthCounter++);
+        System.out.println("[Saving Manager] 9. 6 months went by%n");
         SavingsManagerService.passTime();
-        System.out.printf("%d months went by%n", monthCounter++);
+        System.out.println("[Saving Manager] 10. 7 months went by%n");
         SavingsManagerService.passTime();
-        System.out.printf("%d months went by%n", monthCounter);
-        System.out.println("[Saving Manager] 4. A: " + TransactionManagerService.checkFunds(savingsAccountA.getId()));
-        System.out.println("[Saving Manager] 5. B: " + TransactionManagerService.checkFunds(savingsAccountB.getId()));
-        System.out.println("[Saving Manager] 6. Checking A: " + TransactionManagerService.checkFunds(checkingAccountA.getId()));
+        System.out.println("[Saving Manager] 11. 8 months went by%n");
+        System.out.println("[Saving Manager] 12. A: " + TransactionManagerService.checkFunds(savingsAccountA.getId()));
+        System.out.println("[Saving Manager] 13. B: " + TransactionManagerService.checkFunds(savingsAccountB.getId()));
+        System.out.println("[Saving Manager] 14. Checking A: " + TransactionManagerService.checkFunds(checkingAccountA.getId()));
 
         System.out.println("\n[SYSTEM] Application closed\n");
     }
